@@ -168,19 +168,14 @@
       border-color: rgba(148,163,184,0.25);
     }
 
-    .nav-pill {
-      padding: 0.16rem 0.55rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid rgba(148,163,184,0.45);
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      background: rgba(0,0,0,0.6);
+    /* Depois de is-soft para que, ao clicar, o roxo vença */
+    .nav-item.is-active {
+      background: rgba(168,85,247,0.2);
+      border-color: rgba(168,85,247,0.65);
     }
 
-    .nav-pill.green {
-      border-color: rgba(168,85,247,0.6);
-      color: #c4b5fd;
-      background: rgba(168,85,247,0.12);
+    .nav-pill {
+      display: none;
     }
 
     .sidebar-footer {
@@ -256,54 +251,20 @@
       background: #a855f7;
     }
 
-    .grid-header-cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.9rem;
-    }
-
-    .header-card {
-      padding: 0.9rem 1rem;
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-subtle);
-      background: #0d0d0d;
-      box-shadow: var(--shadow-soft);
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      min-width: 0;
-    }
-
-    .header-card-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-    }
-
-    .header-card-value {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    .header-card-sub {
-      font-size: 0.78rem;
-      color: var(--text-secondary);
-    }
-
     /* LAYOUT DAS SEÇÕES ------------------------------------------ */
     .sections {
-      display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
-      gap: 1rem;
-      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
-    .column {
+    .sections .column {
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      width: 100%;
+      max-width: 720px;
     }
 
     section {
@@ -672,8 +633,8 @@
       .main {
         padding: 1.25rem;
       }
-      .sections {
-        grid-template-columns: 1fr;
+      .sections .column {
+        max-width: 100%;
       }
     }
 
@@ -682,17 +643,11 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      .grid-header-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
     }
 
     @media (max-width: 520px) {
       .main {
         padding: 1rem 0.85rem 1.2rem;
-      }
-      .grid-header-cards {
-        grid-template-columns: minmax(0, 1fr);
       }
       section {
         padding: 1rem;
@@ -726,26 +681,23 @@
         <div>
           <div class="nav-label">Seções</div>
           <div class="nav-group">
-            <div class="nav-item is-primary" data-secao="secao-produtos" role="button" tabindex="0" title="Ir para Cadastrar produto">
+            <div class="nav-item is-primary is-active" data-secao="secao-produtos" role="button" tabindex="0" title="Ir para Cadastrar produto">
               <div>
                 <strong>Produtos</strong>
                 <span>Cadastro e níveis mínimos</span>
               </div>
-              <span class="nav-pill green">CRUD</span>
             </div>
             <div class="nav-item is-soft" data-secao="secao-movimentacoes" role="button" tabindex="0" title="Ir para Movimentar estoque">
               <div>
                 <strong>Movimentações</strong>
                 <span>Entradas e saídas</span>
               </div>
-              <span class="nav-pill">Histórico</span>
             </div>
             <div class="nav-item is-soft" data-secao="secao-relatorios" role="button" tabindex="0" title="Ir para Relatórios">
               <div>
                 <strong>Relatórios</strong>
                 <span>Visão rápida do estoque</span>
               </div>
-              <span class="nav-pill">Resumo</span>
             </div>
           </div>
         </div>
@@ -765,24 +717,6 @@
         <div class="header-badge">
           <span class="header-dot"></span>
           <span>Servidor online em <code style="border-radius:6px;padding:0 0.25rem;background:rgba(15,23,42,0.9);">http://127.0.0.1:8000</code></span>
-        </div>
-      </div>
-
-      <div class="grid-header-cards">
-        <div class="header-card">
-          <div class="header-card-label">Passo 1</div>
-          <div class="header-card-value">Cadastre produtos</div>
-          <div class="header-card-sub">Defina nome, SKU, estoque inicial e o nível mínimo.</div>
-        </div>
-        <div class="header-card">
-          <div class="header-card-label">Passo 2</div>
-          <div class="header-card-value">Movimente o estoque</div>
-          <div class="header-card-sub">Registre entradas e saídas e veja o histórico.</div>
-        </div>
-        <div class="header-card">
-          <div class="header-card-label">Passo 3</div>
-          <div class="header-card-value">Acompanhe relatórios</div>
-          <div class="header-card-sub">Veja quais produtos estão abaixo do mínimo.</div>
         </div>
       </div>
 
@@ -813,44 +747,6 @@
             <div id="msgProduto" class="msg" style="display:none;"></div>
           </section>
 
-          <section>
-            <h2>
-              Produtos cadastrados
-              <span class="section-tag">Lista dinâmica</span>
-            </h2>
-            <div class="filters">
-              <div>
-                <label>Filtro</label>
-                <select id="filtroEstoqueBaixo">
-                  <option value="">Todos os produtos</option>
-                  <option value="1">Apenas com estoque abaixo do mínimo</option>
-                </select>
-              </div>
-              <div style="flex:0 0 auto;">
-                <button type="button" id="btnListarProdutos" class="secondary">Atualizar lista</button>
-              </div>
-            </div>
-            <ul id="listaProdutos" class="list"></ul>
-          </section>
-
-          <section id="secao-relatorios">
-            <h2>
-              Relatórios rápidos
-              <span class="section-tag">Visão executiva</span>
-            </h2>
-            <div class="filters">
-              <div style="flex:1;">
-                <button type="button" id="btnRelEstoque" class="secondary">Estoque atual (todos os produtos)</button>
-              </div>
-              <div style="flex:1;">
-                <button type="button" id="btnRelResumo">Resumo geral do estoque</button>
-              </div>
-            </div>
-            <div id="areaRelatorios"></div>
-          </section>
-        </div>
-
-        <div class="column">
           <section id="secao-movimentacoes">
             <h2>
               Movimentar estoque
@@ -881,6 +777,26 @@
 
           <section>
             <h2>
+              Produtos cadastrados
+              <span class="section-tag">Lista dinâmica</span>
+            </h2>
+            <div class="filters">
+              <div>
+                <label>Filtro</label>
+                <select id="filtroEstoqueBaixo">
+                  <option value="">Todos os produtos</option>
+                  <option value="1">Apenas com estoque abaixo do mínimo</option>
+                </select>
+              </div>
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnListarProdutos" class="secondary">Atualizar lista</button>
+              </div>
+            </div>
+            <ul id="listaProdutos" class="list"></ul>
+          </section>
+
+          <section>
+            <h2>
               Histórico de movimentações
               <span class="section-tag">Últimos registros</span>
             </h2>
@@ -906,6 +822,22 @@
               </div>
             </div>
             <ul id="listaMovs" class="list"></ul>
+          </section>
+
+          <section id="secao-relatorios">
+            <h2>
+              Relatórios rápidos
+              <span class="section-tag">Visão executiva</span>
+            </h2>
+            <div class="filters">
+              <div style="flex:1;">
+                <button type="button" id="btnRelEstoque" class="secondary">Estoque atual (todos os produtos)</button>
+              </div>
+              <div style="flex:1;">
+                <button type="button" id="btnRelResumo">Resumo geral do estoque</button>
+              </div>
+            </div>
+            <div id="areaRelatorios"></div>
           </section>
 
           <section>
@@ -979,6 +911,10 @@
         if (sec) {
           sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        document.querySelectorAll('.nav-item[data-secao]').forEach(function (item) {
+          item.classList.remove('is-active', 'is-primary');
+        });
+        el.classList.add('is-active');
       }
       el.addEventListener('click', irParaSecao);
       el.addEventListener('keydown', function (e) {
