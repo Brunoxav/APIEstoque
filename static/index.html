@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Estoque — Painel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-body: #000000;
+      --bg-shell: #000000;
+      --bg-sidebar: #0a0a0a;
+      --bg-main: #000000;
+      --bg-card: #0d0d0d;
+      --border-subtle: rgba(148,163,184,0.2);
+      --border-strong: rgba(148,163,184,0.45);
+      --text-primary: #e5e7eb;
+      --text-secondary: #9ca3af;
+      --accent: #a855f7;
+      --accent-soft: rgba(168,85,247,0.15);
+      --accent-strong: #8b5cf6;
+      --danger: #f97373;
+      --danger-soft: rgba(248,113,113,0.12);
+      --muted: #4b5563;
+      --radius-lg: 8px;
+      --radius-md: 6px;
+      --radius-sm: 4px;
+      --shadow-soft: 0 8px 24px rgba(0,0,0,0.4);
+      --shadow-card: 0 4px 16px rgba(0,0,0,0.35);
+      --glass: #0d0d0d;
+      --glass-strong: #0f0f0f;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+      background: #000000;
+    }
+
+    /* SIDEBAR ---------------------------------------------------- */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid rgba(148,163,184,0.2);
+      padding: 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-md);
+      background: #1f1f1f;
+      border: 1px solid rgba(168,85,247,0.5);
+      box-shadow: 0 0 0 1px rgba(168,85,247,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-icon::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 2px;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      opacity: 0.9;
+    }
+
+    .brand-main {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .brand-sub {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .nav-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(168,85,247,0.08);
+      border-color: rgba(168,85,247,0.25);
+    }
+
+    .nav-item strong {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #e5e7eb;
+    }
+
+    .nav-item span {
+      opacity: 0.7;
+    }
+
+    .nav-item.is-primary {
+      background: rgba(168,85,247,0.12);
+      border-color: rgba(168,85,247,0.5);
+    }
+
+    .nav-item.is-soft {
+      background: #0d0d0d;
+      border-color: rgba(148,163,184,0.25);
+    }
+
+    .nav-pill {
+      padding: 0.16rem 0.55rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      background: rgba(0,0,0,0.6);
+    }
+
+    .nav-pill.green {
+      border-color: rgba(168,85,247,0.6);
+      color: #c4b5fd;
+      background: rgba(168,85,247,0.12);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 1.25rem;
+      border-top: 1px dashed rgba(75,85,99,0.6);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .sidebar-footer a {
+      color: #c4b5fd;
+      text-decoration: none;
+    }
+
+    .sidebar-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* MAIN ------------------------------------------------------- */
+    .main {
+      flex: 1;
+      padding: 1.75rem 1.75rem 1.75rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      background: #000000;
+    }
+
+    .main-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .main-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .main-title h1 {
+      margin: 0;
+      font-size: 1.55rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .main-title p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148,163,184,0.4);
+      background: #0d0d0d;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .header-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: #a855f7;
+    }
+
+    .grid-header-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .header-card {
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: #0d0d0d;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+
+    .header-card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .header-card-value {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .header-card-sub {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    /* LAYOUT DAS SEÇÕES ------------------------------------------ */
+    .sections {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    section {
+      background: var(--glass);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.25rem 1.1rem;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(168,85,247,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    section h2 {
+      margin: 0 0 0.9rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      font-size: 0.98rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .section-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--text-secondary);
+      background: #0a0a0a;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(55,65,81,0.9);
+      background: #0d0d0d;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+      margin-bottom: 0.7rem;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #6b7280;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(168,85,247,0.7);
+      box-shadow: 0 0 0 1px rgba(168,85,247,0.4);
+      background: #0d0d0d;
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    button {
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--radius-md);
+      border: none;
+      font-size: 0.86rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      background: #7c3aed;
+      color: #f5f3ff;
+      border: 1px solid rgba(168,85,247,0.5);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+
+    button:hover {
+      background: #8b5cf6;
+      border-color: rgba(168,85,247,0.7);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.secondary {
+      background: #1f1f1f;
+      color: #e5e7eb;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    button.secondary:hover {
+      background: #262626;
+      border-color: rgba(168,85,247,0.5);
+    }
+
+    button.danger {
+      background: #1f1f1f;
+      color: #fecaca;
+      border: 1px solid rgba(248,113,113,0.6);
+    }
+
+    button.danger:hover {
+      background: rgba(185,28,28,0.25);
+      border-color: rgba(248,113,113,0.8);
+    }
+
+    button.small {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.78rem;
+      background: #0d0d0d;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148,163,184,0.45);
+    }
+
+    button.small:hover {
+      background: #171717;
+      color: #e5e7eb;
+      border-color: rgba(168,85,247,0.4);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-bottom: 0.6rem;
+    }
+
+    .filters > div {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0.1rem 0 0;
+      max-height: 340px;
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(55,65,81,0.9) transparent;
+    }
+
+    .list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .list::-webkit-scrollbar-thumb {
+      background: rgba(55,65,81,0.9);
+      border-radius: var(--radius-sm);
+    }
+
+    .list li {
+      padding: 0.85rem 0.9rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(31,41,55,0.95);
+      background: #0d0d0d;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) auto auto;
+      gap: 0.55rem 0.75rem;
+      align-items: center;
+      margin-bottom: 0.55rem;
+      transition: border-color 0.14s ease, box-shadow 0.14s ease, transform 0.08s ease;
+    }
+
+    .list li:hover {
+      border-color: rgba(168,85,247,0.4);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+
+    .list li .info {
+      min-width: 0;
+    }
+
+    .list li .info strong {
+      display: block;
+      margin-bottom: 0.1rem;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .list li .info small {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      display: block;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.18rem 0.55rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge-sku {
+      background: rgba(59,130,246,0.12);
+      color: #bfdbfe;
+      border: 1px solid rgba(59,130,246,0.6);
+    }
+
+    .badge-low {
+      background: rgba(248,113,113,0.16);
+      color: #fecaca;
+      border: 1px solid rgba(248,113,113,0.7);
+    }
+
+    .badge-ok {
+      background: rgba(168,85,247,0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(168,85,247,0.5);
+    }
+
+    .stock {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #e5e7eb;
+      text-align: right;
+    }
+
+    .stock span {
+      display: block;
+    }
+
+    .stock span:last-child {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      justify-content: flex-end;
+    }
+
+    .msg {
+      margin-top: 0.6rem;
+      padding: 0.55rem 0.8rem;
+      border-radius: var(--radius-md);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+
+    .msg.ok {
+      background: rgba(168,85,247,0.12);
+      color: #c4b5fd;
+      border-color: rgba(168,85,247,0.4);
+    }
+
+    .msg.err {
+      background: var(--danger-soft);
+      color: #fecaca;
+      border-color: rgba(248,113,113,0.7);
+    }
+
+    .empty {
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 0.5rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed rgba(75,85,99,0.7);
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .footer a {
+      color: #c4b5fd;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .app-shell {
+        flex-direction: column;
+      }
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        padding: 1rem 1.25rem;
+      }
+      .nav {
+        flex-direction: row;
+        gap: 1rem;
+      }
+      .nav-group {
+        flex-direction: row;
+        gap: 0.5rem;
+      }
+      .nav-item {
+        padding-inline: 0.85rem;
+      }
+      .sidebar-footer {
+        border-top: none;
+        padding-top: 0;
+      }
+      .main {
+        padding: 1.25rem;
+      }
+      .sections {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .sidebar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .grid-header-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .main {
+        padding: 1rem 0.85rem 1.2rem;
+      }
+      .grid-header-cards {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      section {
+        padding: 1rem;
+      }
+      .list li {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .actions {
+        justify-content: flex-start;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        min-height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon"></div>
+        <div>
+          <div class="brand-main">Estoque • API</div>
+          <div class="brand-sub">Painel de controle em FastAPI</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div>
+          <div class="nav-label">Seções</div>
+          <div class="nav-group">
+            <div class="nav-item is-primary" data-secao="secao-produtos" role="button" tabindex="0" title="Ir para Cadastrar produto">
+              <div>
+                <strong>Produtos</strong>
+                <span>Cadastro e níveis mínimos</span>
+              </div>
+              <span class="nav-pill green">CRUD</span>
+            </div>
+            <div class="nav-item is-soft" data-secao="secao-movimentacoes" role="button" tabindex="0" title="Ir para Movimentar estoque">
+              <div>
+                <strong>Movimentações</strong>
+                <span>Entradas e saídas</span>
+              </div>
+              <span class="nav-pill">Histórico</span>
+            </div>
+            <div class="nav-item is-soft" data-secao="secao-relatorios" role="button" tabindex="0" title="Ir para Relatórios">
+              <div>
+                <strong>Relatórios</strong>
+                <span>Visão rápida do estoque</span>
+              </div>
+              <span class="nav-pill">Resumo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        Teste tudo pela interface e, se quiser ver os contratos detalhados, abra a documentação em
+        <a href="/docs" target="_blank" rel="noreferrer">/docs</a>.
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-header">
+        <div class="main-title">
+          <h1>Controle de Estoque</h1>
+          <p>Painel interativo para testar cadastro de produtos, movimentações e relatórios em tempo real.</p>
+        </div>
+        <div class="header-badge">
+          <span class="header-dot"></span>
+          <span>Servidor online em <code style="border-radius:6px;padding:0 0.25rem;background:rgba(15,23,42,0.9);">http://127.0.0.1:8000</code></span>
+        </div>
+      </div>
+
+      <div class="grid-header-cards">
+        <div class="header-card">
+          <div class="header-card-label">Passo 1</div>
+          <div class="header-card-value">Cadastre produtos</div>
+          <div class="header-card-sub">Defina nome, SKU, estoque inicial e o nível mínimo.</div>
+        </div>
+        <div class="header-card">
+          <div class="header-card-label">Passo 2</div>
+          <div class="header-card-value">Movimente o estoque</div>
+          <div class="header-card-sub">Registre entradas e saídas e veja o histórico.</div>
+        </div>
+        <div class="header-card">
+          <div class="header-card-label">Passo 3</div>
+          <div class="header-card-value">Acompanhe relatórios</div>
+          <div class="header-card-sub">Veja quais produtos estão abaixo do mínimo.</div>
+        </div>
+      </div>
+
+      <div class="sections">
+        <div class="column">
+          <section id="secao-produtos">
+            <h2>
+              Cadastrar produto
+              <span class="section-tag">Entrada de catálogo</span>
+            </h2>
+            <form id="formCriarProduto" class="grid-2">
+              <div>
+                <label>Nome</label>
+                <input type="text" id="produtoNome" placeholder="Ex: Teclado mecânico ABNT2" required>
+                <label>Descrição</label>
+                <textarea id="produtoDescricao" placeholder="Resumo do produto, modelo, variação..."></textarea>
+              </div>
+              <div>
+                <label>SKU / Código interno</label>
+                <input type="text" id="produtoSku" placeholder="Ex: TEC-MEC-ABNT2">
+                <label>Estoque inicial</label>
+                <input type="number" id="produtoEstoqueInicial" min="0" value="0">
+                <label>Estoque mínimo (alerta)</label>
+                <input type="number" id="produtoEstoqueMinimo" min="0" value="0">
+              </div>
+            </form>
+            <button type="button" id="btnCriarProduto">Salvar produto</button>
+            <div id="msgProduto" class="msg" style="display:none;"></div>
+          </section>
+
+          <section>
+            <h2>
+              Produtos cadastrados
+              <span class="section-tag">Lista dinâmica</span>
+            </h2>
+            <div class="filters">
+              <div>
+                <label>Filtro</label>
+                <select id="filtroEstoqueBaixo">
+                  <option value="">Todos os produtos</option>
+                  <option value="1">Apenas com estoque abaixo do mínimo</option>
+                </select>
+              </div>
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnListarProdutos" class="secondary">Atualizar lista</button>
+              </div>
+            </div>
+            <ul id="listaProdutos" class="list"></ul>
+          </section>
+
+          <section id="secao-relatorios">
+            <h2>
+              Relatórios rápidos
+              <span class="section-tag">Visão executiva</span>
+            </h2>
+            <div class="filters">
+              <div style="flex:1;">
+                <button type="button" id="btnRelEstoque" class="secondary">Estoque atual (todos os produtos)</button>
+              </div>
+              <div style="flex:1;">
+                <button type="button" id="btnRelResumo">Resumo geral do estoque</button>
+              </div>
+            </div>
+            <div id="areaRelatorios"></div>
+          </section>
+        </div>
+
+        <div class="column">
+          <section id="secao-movimentacoes">
+            <h2>
+              Movimentar estoque
+              <span class="section-tag">Entradas e saídas</span>
+            </h2>
+            <div class="filters">
+              <div style="max-width: 110px;">
+                <label>ID do produto</label>
+                <input type="number" id="movProdutoId" min="1" placeholder="ID">
+              </div>
+              <div style="min-width: 140px;">
+                <label>Tipo</label>
+                <select id="movTipo">
+                  <option value="entrada">Entrada</option>
+                  <option value="saida">Saída</option>
+                </select>
+              </div>
+              <div style="max-width: 120px;">
+                <label>Quantidade</label>
+                <input type="number" id="movQuantidade" min="1" value="1">
+              </div>
+            </div>
+            <label>Observação</label>
+            <textarea id="movObservacao" placeholder="Ex: Compra do fornecedor X, ajuste de inventário..."></textarea>
+            <button type="button" id="btnMovimentar">Registrar movimentação</button>
+            <div id="msgMovimentacao" class="msg" style="display:none;"></div>
+          </section>
+
+          <section>
+            <h2>
+              Histórico de movimentações
+              <span class="section-tag">Últimos registros</span>
+            </h2>
+            <div class="filters">
+              <div style="max-width: 120px;">
+                <label>ID do produto</label>
+                <input type="number" id="histProdutoId" min="1" placeholder="(opcional)">
+              </div>
+              <div style="min-width: 140px;">
+                <label>Tipo</label>
+                <select id="histTipo">
+                  <option value="">Todas</option>
+                  <option value="entrada">Entradas</option>
+                  <option value="saida">Saídas</option>
+                </select>
+              </div>
+              <div style="max-width: 140px;">
+                <label>Limite</label>
+                <input type="number" id="histLimite" min="1" max="500" value="50">
+              </div>
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnListarMovs" class="secondary">Atualizar histórico</button>
+              </div>
+            </div>
+            <ul id="listaMovs" class="list"></ul>
+          </section>
+
+          <section>
+            <h2>
+              Editar / excluir produto
+              <span class="section-tag">Gestão avançada</span>
+            </h2>
+            <div style="max-width: 130px; margin-bottom: 0.7rem;">
+              <label>ID do produto</label>
+              <input type="number" id="editProdutoId" min="1" placeholder="ID">
+            </div>
+            <div class="grid-2">
+              <div>
+                <label>Novo nome</label>
+                <input type="text" id="editProdutoNome" placeholder="(opcional)">
+                <label>Nova descrição</label>
+                <textarea id="editProdutoDescricao" placeholder="(opcional)"></textarea>
+              </div>
+              <div>
+                <label>Novo SKU</label>
+                <input type="text" id="editProdutoSku" placeholder="(opcional)">
+                <label>Estoque mínimo</label>
+                <input type="number" id="editProdutoEstoqueMinimo" min="0" placeholder="(opcional)">
+              </div>
+            </div>
+            <div class="filters">
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnCarregarProduto" class="secondary">Carregar dados</button>
+              </div>
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnSalvarEdicao">Salvar alterações</button>
+              </div>
+              <div style="flex:0 0 auto;">
+                <button type="button" id="btnExcluirProduto" class="danger">Excluir produto</button>
+              </div>
+            </div>
+            <div id="msgEditarProduto" class="msg" style="display:none;"></div>
+          </section>
+
+          <div class="footer">
+            Ver contratos da API em <a href="/docs">/docs</a> ou consumir diretamente os endpoints REST.
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const URL_DA_API = window.location.origin;
+    const TEMPO_MENSAGEM_MS = 4000;
+
+    function mostrarMensagem(id, texto, ehErro) {
+      const el = document.getElementById(id);
+      el.textContent = texto;
+      el.className = 'msg ' + (ehErro ? 'err' : 'ok');
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, TEMPO_MENSAGEM_MS);
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.textContent = texto ?? '';
+      return div.innerHTML;
+    }
+
+    // ---------------- Navegação por seções (sidebar) ----------------
+    document.querySelectorAll('.nav-item[data-secao]').forEach(function (el) {
+      var secaoId = el.getAttribute('data-secao');
+      function irParaSecao() {
+        var sec = document.getElementById(secaoId);
+        if (sec) {
+          sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      el.addEventListener('click', irParaSecao);
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          irParaSecao();
+        }
+      });
+    });
+
+    // ---------------- Produtos ----------------
+    document.getElementById('btnCriarProduto').addEventListener('click', async () => {
+      const nome = document.getElementById('produtoNome').value.trim();
+      const descricao = document.getElementById('produtoDescricao').value.trim();
+      const sku = document.getElementById('produtoSku').value.trim();
+      const estoqueInicial = Number(document.getElementById('produtoEstoqueInicial').value || '0');
+      const estoqueMinimo = Number(document.getElementById('produtoEstoqueMinimo').value || '0');
+
+      if (!nome) {
+        mostrarMensagem('msgProduto', 'Informe o nome do produto.', true);
+        return;
+      }
+
+      try {
+        const resposta = await fetch(URL_DA_API + '/produtos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nome,
+            descricao: descricao || null,
+            sku: sku || null,
+            estoque_inicial: estoqueInicial,
+            estoque_minimo: estoqueMinimo
+          })
+        });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.detail || JSON.stringify(dados));
+        mostrarMensagem('msgProduto', 'Produto #' + dados.id + ' cadastrado.', false);
+        document.getElementById('formCriarProduto').reset();
+        document.getElementById('produtoEstoqueInicial').value = '0';
+        document.getElementById('produtoEstoqueMinimo').value = '0';
+        listarProdutos();
+      } catch (err) {
+        mostrarMensagem('msgProduto', err.message, true);
+      }
+    });
+
+    async function listarProdutos() {
+      const filtro = document.getElementById('filtroEstoqueBaixo').value;
+      const params = new URLSearchParams();
+      if (filtro === '1') params.set('com_estoque_baixo', 'true');
+      const url = URL_DA_API + '/produtos' + (params.toString() ? '?' + params.toString() : '');
+
+      try {
+        const resposta = await fetch(url);
+        const lista = await resposta.json();
+        const ul = document.getElementById('listaProdutos');
+        if (!Array.isArray(lista) || lista.length === 0) {
+          ul.innerHTML = '<li class="empty">Nenhum produto cadastrado.</li>';
+          return;
+        }
+        ul.innerHTML = lista.map(p => {
+          const abaixo = p.estoque_minimo > 0 && p.estoque_atual <= p.estoque_minimo;
+          const badgeClasse = abaixo ? 'badge badge-low' : 'badge badge-ok';
+          const badgeTexto = abaixo ? 'Estoque baixo' : 'OK';
+          const skuHtml = p.sku ? `<span class="badge badge-sku">${escaparHtml(p.sku)}</span>` : '';
+          return `
+            <li>
+              <div class="info">
+                <strong>#${p.id} — ${escaparHtml(p.nome)}</strong>
+                <small>${escaparHtml((p.descricao || '').slice(0, 100))}${(p.descricao || '').length > 100 ? '…' : ''}</small>
+              </div>
+              <div class="stock">
+                <span>${p.estoque_atual} un.</span>
+                <span style="color:#64748b;">(mín.: ${p.estoque_minimo})</span>
+              </div>
+              <div>
+                ${skuHtml}
+                <span class="${badgeClasse}" style="margin-left:0.25rem;">${badgeTexto}</span>
+              </div>
+              <div class="actions">
+                <button type="button" class="small" onclick="document.getElementById('movProdutoId').value=${p.id}">Usar para movimentar</button>
+                <button type="button" class="small" onclick="prepararEdicaoProduto(${p.id})">Editar</button>
+              </div>
+            </li>
+          `;
+        }).join('');
+      } catch (err) {
+        document.getElementById('listaProdutos').innerHTML =
+          '<li class="empty">Erro ao carregar produtos: ' + escaparHtml(err.message) + '</li>';
+      }
+    }
+
+    document.getElementById('btnListarProdutos').addEventListener('click', listarProdutos);
+
+    async function prepararEdicaoProduto(id) {
+      try {
+        const resposta = await fetch(URL_DA_API + '/produtos/' + id);
+        const p = await resposta.json();
+        if (!resposta.ok) throw new Error(p.detail || 'Erro ao carregar produto.');
+        document.getElementById('editProdutoId').value = p.id;
+        document.getElementById('editProdutoNome').value = p.nome || '';
+        document.getElementById('editProdutoDescricao').value = p.descricao || '';
+        document.getElementById('editProdutoSku').value = p.sku || '';
+        document.getElementById('editProdutoEstoqueMinimo').value = p.estoque_minimo;
+      } catch (err) {
+        mostrarMensagem('msgEditarProduto', err.message, true);
+      }
+    }
+
+    document.getElementById('btnCarregarProduto').addEventListener('click', async () => {
+      const id = document.getElementById('editProdutoId').value;
+      if (!id) {
+        mostrarMensagem('msgEditarProduto', 'Informe o ID.', true);
+        return;
+      }
+      prepararEdicaoProduto(id);
+    });
+
+    document.getElementById('btnSalvarEdicao').addEventListener('click', async () => {
+      const id = document.getElementById('editProdutoId').value;
+      if (!id) { mostrarMensagem('msgEditarProduto', 'Informe o ID.', true); return; }
+      const corpo = {};
+      const nome = document.getElementById('editProdutoNome').value.trim();
+      const descricao = document.getElementById('editProdutoDescricao').value.trim();
+      const sku = document.getElementById('editProdutoSku').value.trim();
+      const minimoStr = document.getElementById('editProdutoEstoqueMinimo').value;
+
+      if (nome) corpo.nome = nome;
+      if (descricao) corpo.descricao = descricao;
+      if (sku) corpo.sku = sku;
+      if (minimoStr !== '') corpo.estoque_minimo = Number(minimoStr);
+
+      if (Object.keys(corpo).length === 0) {
+        mostrarMensagem('msgEditarProduto', 'Preencha pelo menos um campo.', true);
+        return;
+      }
+
+      try {
+        const resposta = await fetch(URL_DA_API + '/produtos/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(corpo)
+        });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.detail || JSON.stringify(dados));
+        mostrarMensagem('msgEditarProduto', 'Produto #' + id + ' atualizado.', false);
+        listarProdutos();
+      } catch (err) {
+        mostrarMensagem('msgEditarProduto', err.message, true);
+      }
+    });
+
+    document.getElementById('btnExcluirProduto').addEventListener('click', async () => {
+      const id = document.getElementById('editProdutoId').value;
+      if (!id) { mostrarMensagem('msgEditarProduto', 'Informe o ID.', true); return; }
+      if (!confirm('Excluir produto #' + id + ' e seu histórico?')) return;
+
+      try {
+        const resposta = await fetch(URL_DA_API + '/produtos/' + id, { method: 'DELETE' });
+        if (resposta.status === 204) {
+          mostrarMensagem('msgEditarProduto', 'Produto #' + id + ' excluído.', false);
+          document.getElementById('editProdutoId').value = '';
+          document.getElementById('editProdutoNome').value = '';
+          document.getElementById('editProdutoDescricao').value = '';
+          document.getElementById('editProdutoSku').value = '';
+          document.getElementById('editProdutoEstoqueMinimo').value = '';
+          listarProdutos();
+        } else {
+          const dados = await resposta.json();
+          throw new Error(dados.detail || resposta.statusText);
+        }
+      } catch (err) {
+        mostrarMensagem('msgEditarProduto', err.message, true);
+      }
+    });
+
+    // ---------------- Movimentações ----------------
+    document.getElementById('btnMovimentar').addEventListener('click', async () => {
+      const produtoId = Number(document.getElementById('movProdutoId').value);
+      const tipo = document.getElementById('movTipo').value;
+      const quantidade = Number(document.getElementById('movQuantidade').value);
+      const observacao = document.getElementById('movObservacao').value.trim();
+
+      if (!produtoId) {
+        mostrarMensagem('msgMovimentacao', 'Informe o ID do produto.', true);
+        return;
+      }
+      if (!quantidade || quantidade <= 0) {
+        mostrarMensagem('msgMovimentacao', 'Informe uma quantidade maior que zero.', true);
+        return;
+      }
+
+      try {
+        const resposta = await fetch(URL_DA_API + '/movimentacoes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            produto_id: produtoId,
+            tipo,
+            quantidade,
+            observacao: observacao || null
+          })
+        });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.detail || JSON.stringify(dados));
+        mostrarMensagem('msgMovimentacao', 'Movimentação registrada (ID ' + dados.id + ').', false);
+        document.getElementById('movObservacao').value = '';
+        listarProdutos();
+        listarMovimentacoes();
+      } catch (err) {
+        mostrarMensagem('msgMovimentacao', err.message, true);
+      }
+    });
+
+    async function listarMovimentacoes() {
+      const produtoId = document.getElementById('histProdutoId').value;
+      const tipo = document.getElementById('histTipo').value;
+      const limite = document.getElementById('histLimite').value || '50';
+
+      const params = new URLSearchParams();
+      if (produtoId) params.set('produto_id', produtoId);
+      if (tipo) params.set('tipo', tipo);
+      params.set('limite', limite);
+
+      const url = URL_DA_API + '/movimentacoes?' + params.toString();
+
+      try {
+        const resposta = await fetch(url);
+        const lista = await resposta.json();
+        const ul = document.getElementById('listaMovs');
+        if (!Array.isArray(lista) || lista.length === 0) {
+          ul.innerHTML = '<li class="empty">Nenhuma movimentação encontrada.</li>';
+          return;
+        }
+        ul.innerHTML = lista.map(m => {
+          const data = new Date(m.criado_em);
+          const dataStr = data.toLocaleString('pt-BR');
+          const tipoLabel = m.tipo === 'entrada' ? 'Entrada' : 'Saída';
+          const badgeClasse = m.tipo === 'entrada' ? 'badge badge-ok' : 'badge badge-low';
+          return `
+            <li>
+              <div class="info">
+                <strong>#${m.id} — Produto ${m.produto_id} (${tipoLabel})</strong>
+                <small>${escaparHtml((m.observacao || '').slice(0, 100))}${(m.observacao || '').length > 100 ? '…' : ''}</small>
+              </div>
+              <div class="stock">
+                <span>${m.quantidade} un.</span>
+              </div>
+              <div>
+                <span class="${badgeClasse}">${tipoLabel}</span>
+              </div>
+              <div style="font-size:0.8rem;color:#64748b;">
+                ${dataStr}
+              </div>
+            </li>
+          `;
+        }).join('');
+      } catch (err) {
+        document.getElementById('listaMovs').innerHTML =
+          '<li class="empty">Erro ao carregar movimentações: ' + escaparHtml(err.message) + '</li>';
+      }
+    }
+
+    document.getElementById('btnListarMovs').addEventListener('click', listarMovimentacoes);
+
+    // ---------------- Relatórios ----------------
+    document.getElementById('btnRelEstoque').addEventListener('click', async () => {
+      const area = document.getElementById('areaRelatorios');
+      try {
+        const resposta = await fetch(URL_DA_API + '/relatorios/estoque');
+        const itens = await resposta.json();
+        if (!Array.isArray(itens) || itens.length === 0) {
+          area.innerHTML = '<p class="empty">Nenhum produto para mostrar.</p>';
+          return;
+        }
+        area.innerHTML = `
+          <h3 style="margin-top:0;margin-bottom:0.75rem;font-size:0.95rem;color:#0f172a;">Estoque atual por produto</h3>
+          <ul class="list">
+            ${itens.map(i => {
+              const badgeClasse = i.abaixo_do_minimo ? 'badge badge-low' : 'badge badge-ok';
+              const badgeTexto = i.abaixo_do_minimo ? 'Abaixo do mínimo' : 'OK';
+              const skuHtml = i.sku ? `<span class="badge badge-sku">${escaparHtml(i.sku)}</span>` : '';
+              return `
+                <li>
+                  <div class="info">
+                    <strong>#${i.id} — ${escaparHtml(i.nome)}</strong>
+                    <small>Estoque: ${i.estoque_atual} (mín.: ${i.estoque_minimo})</small>
+                  </div>
+                  <div>
+                    ${skuHtml}
+                    <span class="${badgeClasse}" style="margin-left:0.25rem;">${badgeTexto}</span>
+                  </div>
+                </li>
+              `;
+            }).join('')}
+          </ul>
+        `;
+      } catch (err) {
+        area.innerHTML = '<p class="empty">Erro ao carregar relatório: ' + escaparHtml(err.message) + '</p>';
+      }
+    });
+
+    document.getElementById('btnRelResumo').addEventListener('click', async () => {
+      const area = document.getElementById('areaRelatorios');
+      try {
+        const resposta = await fetch(URL_DA_API + '/relatorios/resumo');
+        const r = await resposta.json();
+        if (!resposta.ok) throw new Error(r.detail || JSON.stringify(r));
+        area.innerHTML = `
+          <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+            <div style="flex:1;min-width:120px;padding:0.75rem 1rem;border-radius:6px;background:#0d0d0d;border:1px solid rgba(148,163,184,0.2);">
+              <div style="font-size:0.75rem;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Produtos</div>
+              <div style="font-size:1.25rem;font-weight:700;color:#e5e7eb;">${r.total_produtos}</div>
+            </div>
+            <div style="flex:1;min-width:120px;padding:0.75rem 1rem;border-radius:6px;background:#0d0d0d;border:1px solid rgba(168,85,247,0.3);">
+              <div style="font-size:0.75rem;color:#c4b5fd;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Itens em estoque</div>
+              <div style="font-size:1.25rem;font-weight:700;color:#a855f7;">${r.total_itens}</div>
+            </div>
+            <div style="flex:1;min-width:120px;padding:0.75rem 1rem;border-radius:6px;background:#0d0d0d;border:1px solid rgba(248,113,113,0.3);">
+              <div style="font-size:0.75rem;color:#fecaca;font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Abaixo do mínimo</div>
+              <div style="font-size:1.25rem;font-weight:700;color:#f97373;">${r.produtos_abaixo_minimo}</div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        area.innerHTML = '<p class="empty">Erro ao carregar resumo: ' + escaparHtml(err.message) + '</p>';
+      }
+    });
+
+    // Inicialização
+    listarProdutos();
+    listarMovimentacoes();
+  </script>
+</body>
+</html>
+
