@@ -20,7 +20,7 @@ function Get-GitRemoteOrigin {
     $ErrorActionPreference = 'Stop'
     if ($out -is [System.Management.Automation.ErrorRecord]) { return $null }
     $s = [string]$out
-    if ($s -match 'error:') { return $null }
+    if ([string]::IsNullOrEmpty($s) -or $s -match 'error:') { return $null }
     return $s.Trim()
 }
 
