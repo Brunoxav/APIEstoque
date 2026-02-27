@@ -66,29 +66,5 @@ Acesse:
 
 - `GET /db-status` — Informa caminho do arquivo SQLite e alguns números do estoque
 
-## Publicar no GitHub
 
-**Opção 1 — Script (recomendado)**  
-Na pasta `projeto2_estoque`, execute:
-
-- **PowerShell:** `.\publicar-github.ps1`  
-- **CMD:** `publicar-github.bat`
-
-O script inicializa o repositório (se ainda não existir), faz o primeiro commit e pede a URL do repositório no GitHub. Crie o repositório em [github.com/new](https://github.com/new) (sem marcar “Initialize with README”) e cole a URL quando solicitado.
-
-**Opção 2 — Comandos manuais**
-
-```bash
-cd projeto2_estoque
-git init
-git add .
-git commit -m "Projeto 2: Sistema de Controle de Estoque"
-git branch -M main
-git remote add origin https://github.com/SEU_USUARIO/SEU_REPO.git
-git push -u origin main
-```
-
-Substitua `SEU_USUARIO` e `SEU_REPO` pelo seu usuário e nome do repositório no GitHub.
-
-O arquivo `.gitignore` já está configurado (exclui `__pycache__`, `venv`, `estoque.db`, etc.).
 
