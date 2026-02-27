@@ -100,3 +100,4 @@ Write-Host "  1. Passe a URL: .\publicar-github.ps1 -Url 'https://github.com/SEU
 Write-Host "  2. Ou crie um token em https://github.com/settings/tokens e execute:" -ForegroundColor White
 Write-Host "     `$env:GITHUB_TOKEN='ghp_xxx'; .\publicar-github.ps1" -ForegroundColor White
 Write-Host ""
+exit 0
