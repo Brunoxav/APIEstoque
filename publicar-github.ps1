@@ -14,6 +14,16 @@ if (Test-Path "C:\Program Files\Git\bin\git.exe") { $gitExe = "C:\Program Files\
 
 function Run-Git { & $gitExe @args }
 
+function Get-GitRemoteOrigin {
+    $ErrorActionPreference = 'SilentlyContinue'
+    $out = & $gitExe remote get-url origin 2>&1
+    $ErrorActionPreference = 'Stop'
+    if ($out -is [System.Management.Automation.ErrorRecord]) { return $null }
+    $s = [string]$out
+    if ($s -match 'error:') { return $null }
+    return $s.Trim()
+}
+
 if (-not (Get-Command $gitExe -ErrorAction SilentlyContinue) -and -not (Test-Path $gitExe)) {
     Write-Host "[ERRO] Git nao encontrado. Instale em: https://git-scm.com/download/win" -ForegroundColor Red
     exit 1
@@ -58,8 +68,7 @@ if (-not $urlToUse -and $env:GITHUB_TOKEN) {
     }
 }
 
-$remote = Run-Git remote get-url origin 2>&1
-if ($LASTEXITCODE -ne 0) { $remote = $null }
+$remote = Get-GitRemoteOrigin
 if ($remote -and -not $urlToUse) {
     Write-Host "Fazendo push para origin/main..." -ForegroundColor Cyan
     Run-Git push -u origin main
@@ -77,8 +86,7 @@ if ($urlToUse) {
 }
 
 # Interativo: pedir URL
-$remote = Run-Git remote get-url origin 2>&1
-if ($LASTEXITCODE -ne 0) { $remote = $null }
+$remote = Get-GitRemoteOrigin
 if ($remote) {
     Write-Host "Remote: $remote" -ForegroundColor Gray
     $r = Read-Host "Fazer push? (s/n)"
