@@ -1,70 +1,90 @@
-# Projeto 2 — Sistema de Controle de Estoque
+Projeto 2 — Sistema de Controle de Estoque
 
-API REST para controle de estoque com FastAPI e SQLite.
+API REST desenvolvida com FastAPI e SQLite para controle de estoque. O sistema permite cadastrar produtos, registrar entradas e saídas e gerar relatórios simples, seguindo o mesmo padrão do Projeto 1 (Chamados de Suporte), mas aplicado ao contexto de estoque.
 
-Permite cadastrar produtos, registrar entradas/saídas de estoque e gerar relatórios simples — tudo no mesmo estilo do Projeto 1 (Chamados de Suporte), mas agora voltado para estoque.
+Visão geral
 
-## Funcionalidades
+O objetivo deste projeto é simular um sistema básico de gestão de estoque, com regras reais de negócio e organização de dados em banco relacional.
 
-- **Cadastro de produtos**  
-  - Nome, descrição, SKU/código interno  
-  - Estoque inicial opcional  
-  - Estoque mínimo para alerta
+Principais funcionalidades
+Cadastro de produtos
 
-- **Movimentações de estoque**  
-  - **Entrada**: aumenta o estoque do produto  
-  - **Saída**: reduz o estoque (com validação para não ficar negativo)  
-  - Histórico das movimentações por produto, com data, tipo e observação
+Nome, descrição e SKU/código interno
 
-- **Relatórios simples**  
-  - Estoque atual por produto, indicando se está **abaixo do mínimo**  
-  - Resumo geral: total de produtos, total de itens, quantos estão abaixo do mínimo
+Definição de estoque inicial (opcional)
 
-O que demonstra:
+Configuração de estoque mínimo para alertas
 
-- **CRUD** completo de produtos
-- **Lógica de negócio** para atualizar estoque e impedir saída acima do disponível
-- **Banco de dados** com 2 tabelas (produtos e movimentações)
+Movimentações de estoque
 
-## Como rodar
+Entrada de itens, aumentando o saldo disponível
 
-```bash
+Saída de itens, com validação para impedir estoque negativo
+
+Histórico completo por produto, incluindo data, tipo e observações
+
+Relatórios simples
+
+Consulta do estoque atual por produto, indicando quando está abaixo do mínimo
+
+Resumo geral com:
+
+Total de produtos cadastrados
+
+Quantidade total em estoque
+
+Itens abaixo do nível mínimo
+
+O que este projeto demonstra
+
+Implementação de CRUD completo para produtos
+
+Regras de negócio para controle de estoque
+
+Validação de dados no backend
+
+Modelagem com duas tabelas principais (produtos e movimentações)
+
+Como executar o projeto
 cd projeto2_estoque
 pip install -r requirements.txt
 uvicorn main:app --reload
-```
 
-Acesse:
+Após iniciar o servidor, acesse:
 
-- **API**: `http://127.0.0.1:8000`
-- **Interface de teste**: `http://127.0.0.1:8000/static/index.html`
-- **Documentação Swagger**: `http://127.0.0.1:8000/docs`
+API local: http://127.0.0.1:8000
 
-## Endpoints principais
+Interface simples de testes: http://127.0.0.1:8000/static/index.html
 
-### Produtos
+Documentação interativa (Swagger): http://127.0.0.1:8000/docs
 
-- `POST /produtos` — Cadastrar produto
-- `GET /produtos` — Listar produtos (`com_estoque_baixo=true` para filtrar)
-- `GET /produtos/{id}` — Buscar produto por ID
-- `PUT /produtos/{id}` — Atualizar produto (parcial)
-- `DELETE /produtos/{id}` — Excluir produto e suas movimentações
+Endpoints principais
+Produtos
 
-### Movimentações
+POST /produtos — Cadastrar produto
 
-- `POST /movimentacoes` — Registrar **entrada** ou **saída**  
-  - Corpo: `produto_id`, `tipo` (`entrada` ou `saida`), `quantidade`, `observacao` (opcional)
-- `GET /movimentacoes` — Listar movimentações  
-  - Filtros: `produto_id`, `tipo`, `limite`
+GET /produtos — Listar produtos (filtro opcional com_estoque_baixo=true)
 
-### Relatórios
+GET /produtos/{id} — Buscar produto por ID
 
-- `GET /relatorios/estoque` — Estoque atual por produto (e se está abaixo do mínimo)
-- `GET /relatorios/resumo` — Resumo geral do estoque
+PUT /produtos/{id} — Atualizar produto
 
-### Status do banco
+DELETE /produtos/{id} — Remover produto e movimentações associadas
 
-- `GET /db-status` — Informa caminho do arquivo SQLite e alguns números do estoque
+Movimentações
 
+POST /movimentacoes — Registrar entrada ou saída
+Campos esperados: produto_id, tipo (entrada ou saida), quantidade e observacao (opcional)
 
+GET /movimentacoes — Listar movimentações
+Filtros disponíveis: produto_id, tipo e limite
 
+Relatórios
+
+GET /relatorios/estoque — Lista o estoque atual por produto e alerta de mínimo
+
+GET /relatorios/resumo — Retorna um resumo geral do estoque
+
+Status do banco
+
+GET /db-status — Mostra o caminho do arquivo SQLite e informações gerais do banco
