@@ -58,7 +58,8 @@ if (-not $urlToUse -and $env:GITHUB_TOKEN) {
     }
 }
 
-$remote = Run-Git remote get-url origin 2>$null
+$remote = Run-Git remote get-url origin 2>&1
+if ($LASTEXITCODE -ne 0) { $remote = $null }
 if ($remote -and -not $urlToUse) {
     Write-Host "Fazendo push para origin/main..." -ForegroundColor Cyan
     Run-Git push -u origin main
@@ -76,7 +77,8 @@ if ($urlToUse) {
 }
 
 # Interativo: pedir URL
-$remote = Run-Git remote get-url origin 2>$null
+$remote = Run-Git remote get-url origin 2>&1
+if ($LASTEXITCODE -ne 0) { $remote = $null }
 if ($remote) {
     Write-Host "Remote: $remote" -ForegroundColor Gray
     $r = Read-Host "Fazer push? (s/n)"
